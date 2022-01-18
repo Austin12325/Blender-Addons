@@ -1,0 +1,200 @@
+import bpy
+
+bl_info = {
+    "name": "Austin's Bone Snapping Panel",
+    "blender": (3, 0, 0),
+    "category": "Armature",
+}
+
+class Austins_Properties(bpy.types.PropertyGroup):
+    
+    #User can input their own bones for the desired sliders
+    hand_mag_string : bpy.props.StringProperty(name="Hand/Mag bones", description='Reminder, your bone names need to be seperated by spaces.')
+    hand_weapon_string : bpy.props.StringProperty(name="Hand/Weapon bones", description='Reminder, your bone names need to be seperated by spaces.')
+    weapon_string : bpy.props.StringProperty(name="Weapon Bones", description='Reminder, your bone names need to be seperated by spaces.')
+    mag_string : bpy.props.StringProperty(name="Mag Bones", description='Reminder, your bone names need to be seperated by spaces.')
+    hand_string : bpy.props.StringProperty(name="Hand", description='Reminder, your bone names need to be seperated by spaces.')
+    
+    #Operators for the UI sliders
+    hand_barrel_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    hand_mag_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    mag_weapon_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    hand_mag_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    weapon_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    hand_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
+    
+    #Exposes settings to define the bones
+    show_all_bool : bpy.props.BoolProperty(name="Show bone editing", description='Reminder, your bone names need to be seperated by spaces.')
+
+class Austins_tools(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "Animation"
+    bl_label = "Bone Snapping"
+
+
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+        bone = context.active_bone
+        scene = context.scene
+        mytool = scene.austins_props
+ 
+        #Defines and converts the strings into lists for the UI        
+        HandMag = bpy.data.scenes['Scene'].austins_props.hand_mag_string.split()
+        HandWeapon = bpy.data.scenes['Scene'].austins_props.hand_weapon_string.split() 
+        Weapon = bpy.data.scenes['Scene'].austins_props.weapon_string.split() 
+        Mag = bpy.data.scenes['Scene'].austins_props.mag_string.split() 
+        Handstring = bpy.data.scenes['Scene'].austins_props.hand_string.split() 
+        
+        col = self.layout.column(align=True)
+
+        col.prop(mytool, "show_all_bool")
+                            
+
+        
+        
+        col.label(text="Active bone is: " + bone.name)
+        print("working active bone")
+      
+        #Delete later
+#        print("String coverted to list :",bpy.data.scenes['Scene'].austins_props.hand_mag_string.split()) 
+#        print("String coverted to list :",bpy.data.scenes['Scene'].austins_props.hand_weapon_string.split()) 
+#        print("String coverted to list :",bpy.data.scenes['Scene'].austins_props.weapon_string.split()) 
+        
+        #Enables the string input box if bool is true
+        if bpy.context.scene.austins_props["show_all_bool"] == True: 
+            box = layout.box()
+            box.label(text='Reminder, your bone names need to be seperated by spaces.')
+        
+
+            row = layout.row()
+            
+            col = self.layout.column(align=True)
+            col.prop(mytool, 'hand_mag_string')
+            
+            row = layout.row()
+          
+          #String input boxes 
+            col = self.layout.column(align=True)
+            col.prop(mytool, 'hand_weapon_string')
+            row = layout.row()
+            
+            col = self.layout.column(align=True)
+            col.prop(mytool, 'weapon_string')
+            print("working hand mag string")
+            
+            col = self.layout.column(align=True)
+            col.prop(mytool, 'mag_string')
+            print("working mag string")
+            
+            col = self.layout.column(align=True)
+            col.prop(mytool, 'hand_string')
+            print("working hand string")
+        
+#        #Gives UI sliders to bones in HandMag list. 
+#        if bpy.context.active_bone.name in HandMag:
+#            print("Found bones in Hand/mag list")
+#            
+#                    
+
+#            row = layout.row()
+#            col = self.layout.column(align=True)
+#            
+#        #UI for the sliders 
+
+#            col.label(text="Hand->Barrel")
+#            col.prop(mytool, 'hand_barrel_snap', text='' )
+#        
+
+#            split = layout.split(factor=0)
+#            col = self.layout.column(align=True)
+
+#            
+#            col.label(text="Hand->Mag")
+#            col.prop(mytool, 'hand_mag_snap', text='' )
+#            
+#        #Gives UI sliders to bones in HandWeapon list
+#        if bpy.context.active_bone.name in HandWeapon:
+#            print("Found bones in Hand/Weapon list")
+#            
+#                    
+#        #UI for the sliders 
+#            row = layout.row()
+#            col = self.layout.column(align=True)
+#            
+#            col.label(text="Hand->Barrel")
+#            col.prop(mytool, 'hand_barrel_snap', text='' )
+
+#        
+        
+        if bpy.context.active_bone.name in Weapon:
+            print("Found bones in Weapon list")
+            
+                    
+        #UI for the sliders 
+            row = layout.row()
+            col = self.layout.column(align=True)
+            box = layout.box()
+            split = layout.split(factor=0)
+            col = self.layout.column(align=True)
+            
+            box.label(text="Weapon Drivers")
+            box.prop(mytool, 'weapon_snap', text='Weapon->Rest' )
+#            col.label(text="Mag->Weapon")
+            box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon' )
+#            col.label(text="Hand->Barrel")
+            box.prop(mytool, 'hand_barrel_snap', text='Hand->Barrel' )
+                            
+        if bpy.context.active_bone.name in Mag:
+            print("Found bones in Mag list")
+            
+                    
+        #UI for the sliders 
+            row = layout.row()
+            col = self.layout.column(align=True)
+            
+            split = layout.split(factor=0)
+            col = self.layout.column(align=True)
+            box = layout.box()
+            
+            box.label(text='Mag Drivers')
+#            col.label(text="Mag->Weapon")
+            box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon' )
+#            col.label(text="Hand->Mag")
+            box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )            
+        
+                
+        if bpy.context.active_bone.name in Handstring:
+            print("Found bones in Hand list")
+            
+                    
+        #UI for the sliders 
+            row = layout.row()
+            col = self.layout.column(align=True)
+            
+            split = layout.split(factor=0)
+            col = self.layout.column(align=True)
+            box = layout.box()
+            
+            box.label(text="Hand Drivers")
+#            col.label(text="Hand->Rest")
+            box.prop(mytool, 'hand_snap', text='Hand->Rest' )
+#            col.label(text="Hand->Barrel")
+            box.prop(mytool, 'hand_barrel_snap', text='Hand->Barrel' )
+#            col.label(text="Hand->Mag")
+            box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )
+        
+classes = [Austins_Properties, Austins_tools]
+        
+def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
+        bpy.types.Scene.austins_props = bpy.props.PointerProperty(type= Austins_Properties) 
+            
+    
+def unregister():
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
+        del bpy.types.Scene.austins_props
