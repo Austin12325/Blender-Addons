@@ -9,8 +9,8 @@ bl_info = {
 class Austins_Properties(bpy.types.PropertyGroup):
     
     #User can input their own bones for the desired sliders
-    hand_mag_string : bpy.props.StringProperty(name="Hand/Mag bones", description='Reminder, your bone names need to be seperated by spaces.')
-    hand_weapon_string : bpy.props.StringProperty(name="Hand/Weapon bones", description='Reminder, your bone names need to be seperated by spaces.')
+    hand_mag_shared_string : bpy.props.StringProperty(name="Hand Magazine Shared", description='Reminder, your bone names need to be seperated by spaces.')
+    mag_weapon_shared_string : bpy.props.StringProperty(name="Mag Weapon Shared", description='Reminder, your bone names need to be seperated by spaces.')
     weapon_string : bpy.props.StringProperty(name="Weapon Bones", description='Reminder, your bone names need to be seperated by spaces.')
     mag_string : bpy.props.StringProperty(name="Mag Bones", description='Reminder, your bone names need to be seperated by spaces.')
     hand_string : bpy.props.StringProperty(name="Hand", description='Reminder, your bone names need to be seperated by spaces.')
@@ -19,10 +19,10 @@ class Austins_Properties(bpy.types.PropertyGroup):
     hand_barrel_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
     hand_mag_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
     mag_weapon_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
-    hand_mag_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
     weapon_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
     hand_snap : bpy.props.FloatProperty(default=0, min=0, max=1)
-    
+    hand_mag_shared : bpy.props.FloatProperty(default=0, min=0, max=1)
+    mag_weapon_shared : bpy.props.FloatProperty(default=0, min=0, max=1)
     #Exposes settings to define the bones
     show_all_bool : bpy.props.BoolProperty(name="Show bone editing", description='Reminder, your bone names need to be seperated by spaces.')
 
@@ -42,11 +42,12 @@ class Austins_tools(bpy.types.Panel):
         mytool = scene.austins_props
  
         #Defines and converts the strings into lists for the UI        
-        HandMag = bpy.data.scenes[scene.name].austins_props.hand_mag_string.split()
-        HandWeapon = bpy.data.scenes[scene.name].austins_props.hand_weapon_string.split() 
+        HandMagShared = bpy.data.scenes[scene.name].austins_props.hand_mag_shared_string.split()
+#        HandWeapon = bpy.data.scenes[scene.name].austins_props.hand_weapon_string.split() 
         Weapon = bpy.data.scenes[scene.name].austins_props.weapon_string.split() 
         Mag = bpy.data.scenes[scene.name].austins_props.mag_string.split() 
-        Handstring = bpy.data.scenes[scene.name].austins_props.hand_string.split() 
+        Handstring = bpy.data.scenes[scene.name].austins_props.hand_string.split()
+        MagWeaponShared = bpy.data.scenes[scene.name].austins_props.mag_weapon_shared_string.split()
         
         col = self.layout.column(align=True)
 
@@ -72,13 +73,13 @@ class Austins_tools(bpy.types.Panel):
             row = layout.row()
             
             col = self.layout.column(align=True)
-            col.prop(mytool, 'hand_mag_string')
+            col.prop(mytool, 'hand_mag_shared_string')
             
             row = layout.row()
           
           #String input boxes 
             col = self.layout.column(align=True)
-            col.prop(mytool, 'hand_weapon_string')
+            col.prop(mytool, 'mag_weapon_shared_string')
             row = layout.row()
             
             col = self.layout.column(align=True)
@@ -186,6 +187,21 @@ class Austins_tools(bpy.types.Panel):
 #            col.label(text="Hand->Mag")
             box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )
         
+        
+        
+        if bpy.context.active_bone.name in HandMagShared:
+            print("Found bones in Hand Mag Shared list")
+            box = layout.box()
+            
+            box.label(text="Hand Mag Shared Controls")
+            box.prop(mytool, 'hand_mag_snap', text='Hand->Mag')
+                
+        if bpy.context.active_bone.name in MagWeaponShared:
+            print("Found bones in Mag Weapon Shared list")
+            box = layout.box()
+            box.label(text="Weapon Mag Shared Controls")
+            box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon')
+            
 classes = [Austins_Properties, Austins_tools]
         
 def register():
