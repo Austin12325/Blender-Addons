@@ -6,6 +6,18 @@ bl_info = {
     "category": "Armature",
 }
 
+
+
+
+class ARMATURE_Apply_Visual_Transform(bpy.types.Operator):
+    """This will apply the visual transform of the selected bone"""
+    bl_idname = "armature.apply_visual_transform"
+    bl_label = "Apply Driver Transforms"
+    
+    def execute(self, context):
+        bpy.ops.pose.visual_transform_apply()
+        return {'FINISHED'} 
+
 class Austins_Properties(bpy.types.PropertyGroup):
     
     #User can input their own bones for the desired sliders
@@ -71,7 +83,7 @@ class Austins_tools(bpy.types.Panel):
             box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon' )
             box.prop(mytool, 'hand_barrel_snap', text='Hand->Barrel' )
             box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )    
-        
+            box.operator('armature.apply_visual_transform', text='Apply Transform')
         
         #Enables the string input box if bool is true
         if bpy.context.scene.austins_props["show_all_bool"] == True: 
@@ -155,6 +167,7 @@ class Austins_tools(bpy.types.Panel):
             box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon' )
 #            col.label(text="Hand->Barrel")
             box.prop(mytool, 'hand_barrel_snap', text='Hand->Barrel' )
+            box.operator('armature.apply_visual_transform', text='Apply Transform')
                             
         if bpy.context.active_bone.name in Mag and bpy.context.scene.austins_props["show_all_menus"] == True:
             print("Found bones in Mag list")
@@ -172,7 +185,8 @@ class Austins_tools(bpy.types.Panel):
 #            col.label(text="Mag->Weapon")
             box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon' )
 #            col.label(text="Hand->Mag")
-            box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )            
+            box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )         
+            box.operator('armature.apply_visual_transform', text='Apply Transform')   
         
                 
         if bpy.context.active_bone.name in Handstring and bpy.context.scene.austins_props["show_all_menus"] == True:
@@ -194,6 +208,7 @@ class Austins_tools(bpy.types.Panel):
             box.prop(mytool, 'hand_barrel_snap', text='Hand->Barrel' )
 #            col.label(text="Hand->Mag")
             box.prop(mytool, 'hand_mag_snap', text='Hand->Mag' )
+            box.operator('armature.apply_visual_transform', text='Apply Transform')
         
         
         
@@ -203,14 +218,16 @@ class Austins_tools(bpy.types.Panel):
             
             box.label(text="Hand Mag Shared Controls")
             box.prop(mytool, 'hand_mag_snap', text='Hand->Mag')
+            box.operator('armature.apply_visual_transform', text='Apply Transform')
                 
         if bpy.context.active_bone.name in MagWeaponShared:
             print("Found bones in Mag Weapon Shared list")
             box = layout.box()
             box.label(text="Weapon Mag Shared Controls")
             box.prop(mytool, 'mag_weapon_snap', text='Mag->Weapon')
+            box.operator('armature.apply_visual_transform', text='Apply Transform')
             
-classes = [Austins_Properties, Austins_tools]
+classes = [Austins_Properties, Austins_tools, ARMATURE_Apply_Visual_Transform]
         
 def register():
     for cls in classes:
