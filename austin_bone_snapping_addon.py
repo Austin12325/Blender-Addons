@@ -16,6 +16,7 @@ class ARMATURE_Apply_Visual_Transform(bpy.types.Operator):
     
     def execute(self, context):
         bpy.ops.pose.visual_transform_apply()
+        bpy.ops.anim.keyframe_insert_menu(type='Available')
         return {'FINISHED'} 
 
 class Austins_Properties(bpy.types.PropertyGroup):
